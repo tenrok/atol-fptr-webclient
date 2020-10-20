@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="ru">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
+		<script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+		<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+		<script src="//cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.4.0/bootbox.min.js"></script>
+		<script src="fptr-api.js"></script>
+		<title>Тест</title>
+		<script>
+			// Устанавливаем свои значения
+			FptrAPI.addr = 'http://127.0.0.1:16732/api/v2/';
+			FptrAPI.deviceId = 'test';
+
+			// DEMO
+			(function ($) {
+				'use strict';
+				$.demoButton = {
+					defaults: {
+						success: false, // function ($el, data, textStatus, jqXHR)
+						error: false // function ($el, jqXHR, textStatus, errorThrown)
+					}
+				};
+				var DemoButton = function ($el, options) {
+					var _data = $el.data('demoButton'),
+							_userOptions = typeof options === 'function' ? {success: options} : options,
+							_options = $.extend(true, {}, $.demoButton.defaults, _userOptions, _data || {});
+					var _config = function (value) {
+						if (value === undefined) {
+							return _options;
+						}
+						$.extend(_options, value);
+					};
+					var _handleDone = function (data, textStatus, jqXHR) {
+						if (_options.success) {
+							_options.success($el, data, textStatus, jqXHR);
+						}
+					};
+					var _handleFail = function (jqXHR, textStatus, errorThrown) {
+						if (_options.error) {
+							_options.error($el, jqXHR, textStatus, errorThrown);
+						}
+					};
+					var _destroy = function () {
+						return $el.unbind('.demoButton').removeData('demoButton');
+					};
+					$el.data('demoButton', $.extend({}, _data, {initialized: true}));
+					$el.click(function () {
+						switch ($el.data('op')) {
+							case 'getServerInfo':
+								FptrAPI.getServerInfo().done(_handleDone).fail(_handleFail);
+								break;
+							case 'getSettings':
+								FptrAPI.getSettings().done(_handleDone).fail(_handleFail);
+								break;
+							case 'setSettings':
+								break;
+							case 'devices':
+								FptrAPI.get('devices' + ($el.data('deviceId') ? '/' + $el.data('deviceId') : '')).done(_handleDone).fail(_handleFail);
+								break;
+							case 'deviceParametersStruct':
+								FptrAPI.get('utils/deviceParametersStruct').done(_handleDone).fail(_handleFail);
+								break;
+							case 'mapping':
+								FptrAPI.get('utils/mapping').done(_handleDone).fail(_handleFail);
+								break;
+							case 'setDefaultDevice':
+								break;
+							case 'activateDevice':
+								break;
+							case 'deactivateDevice':
+								break;
+							case 'queryDeviceInfo':
+								FptrAPI.queryDeviceInfo().done(_handleDone).fail(_handleFail);
+								break;
+							case 'queryDeviceStatus':
+								FptrAPI.queryDeviceStatus().done(_handleDone).fail(_handleFail);
+								break;
+							case 'queryShiftStatus':
+								FptrAPI.queryShiftStatus().done(_handleDone).fail(_handleFail);
+								break;
+							case 'queryShiftTotals':
+								FptrAPI.queryShiftTotals().done(_handleDone).fail(_handleFail);
+								break;
+							case 'queryIncomeTotals':
+								FptrAPI.queryIncomeTotals().done(_handleDone).fail(_handleFail);
+								break;
+							case 'queryOutcomeTotals':
+								FptrAPI.queryOutcomeTotals().done(_handleDone).fail(_handleFail);
+								break;
+							case 'queryReceiptTotals':
+								var obj = {type: 'sell'};
+								FptrAPI.queryReceiptTotals(obj).done(_handleDone).fail(_handleFail);
+								break;
+							case 'queryFnInfo':
+								FptrAPI.queryFnInfo().done(_handleDone).fail(_handleFail);
+								break;
+							case 'queryFnStatus':
+								FptrAPI.queryFnStatus().done(_handleDone).fail(_handleFail);
+								break;
+							case 'queryOfdExchangeStatus':
+								FptrAPI.queryOfdExchangeStatus().done(_handleDone).fail(_handleFail);
+								break;
+							case 'request':
+								bootbox.prompt({
+									title: 'JSON задание',
+									inputType: 'textarea',
+									callback: function (result) {
+										if (result) {
+											var obj;
+											try {
+												obj = JSON.parse(result);
+											} catch (e) {
+												console.log('Not valid JSON');
+											}
+											if (obj) {
+												FptrAPI.request(obj).done(_handleDone).fail(_handleFail);
+											}
+										}
+									}
+								});
+								break;
+							case 'openShift':
+								FptrAPI.openShift($el.data('operatorName'), $el.data('operatorVatin')).done(_handleDone).fail(_handleFail);
+								break;
+							case 'closeShift':
+								FptrAPI.closeShift($el.data('operatorName'), $el.data('operatorVatin')).done(_handleDone).fail(_handleFail);
+								break;
+						}
+					});
+					$.extend($el.demoButton, {
+						config: _config,
+						destroy: _destroy
+					});
+				};
+				$.fn.demoButton = function (options) {
+					return this.each(function () {
+						var $el = $(this),
+								data = $el.data('demoButton');
+						if (data && data.initialized) {
+							return;
+						}
+						DemoButton($el, options);
+					});
+				};
+			})(jQuery);
+
+			// Возвращает элемент или создаёт новый
+			$.fn.upsert = function () {
+				var $el = $(this).find('pre');
+				if ($el.length === 0) {
+					$el = $('<pre></pre>');
+					$(this).append($el);
+				}
+				return $el;
+			};
+
+			$(function () {
+				$('.demo-button').demoButton({
+					success: function ($el, data, textStatus, jqXHR) {
+						/* Ответ от вебсервера о добавлении задания в очередь */
+//						{
+//							"number": 1,
+//							"uuid": "fd79f621-4c32-4d95-ad4f-14bf5a915e42",
+//							"isBlocked": false,
+//							"blockedUUID": "",
+//							"blockReason": ""
+//						}
+						if (data.uuid) {
+							// Попытаемся получить результат выполнения задания
+							FptrAPI.getResult(data.uuid, function (data) {
+								$el.closest('.card-body').upsert().append(JSON.stringify(data, null, 2));
+							});
+							return;
+						}
+						$el.closest('.card-body').upsert().html(JSON.stringify(data, null, 2));
+					},
+					error: function ($el, jqXHR, textStatus, errorThrown) {
+						$el.closest('.card-body').upsert().html(jqXHR.responseText);
+					}
+				});
+
+				$('.not-implemented').click(function () {
+					bootbox.alert('Не реализовано');
+				});
+			});
+		</script>
+	</head>
+	<body>
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-12">
+					<div class="card">
+						<div class="card-body">
+							<h5 class="card-title">Документация</h5>
+							<a href="https://integration.atol.ru/api/" target="_blank" class="card-link">Описание API</a>
+							<a href="https://app.swaggerhub.com/apis-docs/atol-dev/fptr-web-server/10.7.0.0/" target="_blank" class="card-link">Работа с вебсервером</a>
+						</div>
+					</div>
+					<div id="accordion">
+						<div class="card">
+							<div class="card-header"><h5><a class="card-link" data-toggle="collapse" href="#collapse1">Общие запросы</a></h5></div>
+							<div id="collapse1" class="collapse" data-parent="#accordion">
+								<div class="card-body">
+									<button type="button" class="btn btn-outline-primary demo-button" data-op="getServerInfo">Получение информации о сервере</button>
+								</div>
+							</div>
+						</div>
+						<div class="card">
+							<div class="card-header"><h5><a class="card-link" data-toggle="collapse" href="#collapse2">Работа с настройками WEB-сервера</a></h5></div>
+							<div id="collapse2" class="collapse" data-parent="#accordion">
+								<div class="card-body">
+									<button type="button" class="btn btn-outline-primary demo-button" data-op="getSettings">Получение настроек WEB-сервера</button>
+									<button type="button" class="btn btn-outline-secondary not-implemented" data-op="setSettings">Изменение настроек WEB-сервера</button>
+								</div>
+							</div>
+						</div>
+						<div class="card">
+							<div class="card-header"><h5><a class="card-link" data-toggle="collapse" href="#collapse3">Работа со списком ККТ</a></h5></div>
+							<div id="collapse3" class="collapse" data-parent="#accordion">
+								<div class="card-body">
+									<button type="button" class="btn btn-outline-primary demo-button" data-op="devices">Получение списка ККТ</button>
+									<button type="button" class="btn btn-outline-primary demo-button" data-op="devices" data-device-id="test">Информация об устройстве "test"</button>
+								</div>
+							</div>
+						</div>
+						<div class="card">
+							<div class="card-header"><h5><a class="card-link" data-toggle="collapse" href="#collapse4">Получение констант и перечислений</a></h5></div>
+							<div id="collapse4" class="collapse" data-parent="#accordion">
+								<div class="card-body">
+									<button type="button" class="btn btn-outline-primary demo-button" data-op="deviceParametersStruct">Получение структуры описания ККТ</button>
+									<button type="button" class="btn btn-outline-primary demo-button" data-op="mapping">Получение списка возможных значений для настроек</button>
+								</div>
+							</div>
+						</div>
+						<div class="card">
+							<div class="card-header"><h5><a class="card-link" data-toggle="collapse" href="#collapse5">Управление режимом работы ККТ</a></h5></div>
+							<div id="collapse5" class="collapse" data-parent="#accordion">
+								<div class="card-body">
+									<button type="button" class="btn btn-outline-secondary not-implemented" data-op="setDefaultDevice">Изменение устройства по умолчанию</button>
+									<button type="button" class="btn btn-outline-secondary not-implemented" data-op="activateDevice">Активация ККТ</button>
+									<button type="button" class="btn btn-outline-secondary not-implemented" data-op="deactivateDevice">Деактивация ККТ</button>
+								</div>
+							</div>
+						</div>
+						<div class="card">
+							<div class="card-header"><h5><a class="card-link" data-toggle="collapse" href="#collapse6">Работа с очередью заданий</a></h5></div>
+							<div id="collapse6" class="collapse" data-parent="#accordion">
+								<div class="card-body">
+									<button type="button" class="btn btn-outline-success demo-button" data-op="request">Добавление нового задания для ККТ</button>
+									<button type="button" class="btn btn-link demo-button" data-op="openShift" data-operator-name="Иванов" data-operator-vatin="123654789507">Открытие смены</button>
+									<button type="button" class="btn btn-link demo-button" data-op="closeShift" data-operator-name="Петров" data-operator-vatin="123654789507">Закрытие смены</button>
+								</div>
+							</div>
+						</div>
+						<div class="card">
+							<div class="card-header"><h5><a class="card-link" data-toggle="collapse" href="#collapse7">Запросы информации о ККТ</a></h5></div>
+							<div id="collapse7" class="collapse" data-parent="#accordion">
+								<div class="card-body">
+									<div class="btn-group" role="group">
+										<button type="button" class="btn btn-outline-success demo-button" data-op="queryDeviceInfo" data-device-id="test">Запрос информации о ККТ</button>
+										<button type="button" class="btn btn-outline-success demo-button" data-op="queryDeviceStatus">Запрос статуса ККТ</button>
+										<button type="button" class="btn btn-outline-success demo-button" data-op="queryShiftStatus">Запрос информации о смене в ККТ</button>
+									</div>
+									<div class="btn-group" role="group">
+										<button type="button" class="btn btn-outline-success demo-button" data-op="queryShiftTotals">Запрос сменных счетчиков</button>
+										<button type="button" class="btn btn-outline-success dropdown-toggle dropdown-toggle-split" data-toggle="dropdown">
+											<span class="sr-only">Toggle Dropdown</span>
+										</button>
+										<div class="dropdown-menu">
+											<a class="dropdown-item demo-button" href="javascript:void(0);" data-op="queryIncomeTotals">Запрос сменных счетчиков по внесениям</a>
+											<a class="dropdown-item demo-button" href="javascript:void(0);" data-op="queryOutcomeTotals">Запрос сменных счетчиков по выплатам</a>
+											<a class="dropdown-item demo-button" href="javascript:void(0);" data-op="queryReceiptTotals">Запрос сменных счетчиков по чекам</a>
+										</div>
+									</div>
+									<div class="btn-group" role="group">
+										<button type="button" class="btn btn-outline-success demo-button" data-op="queryFnInfo">Запрос информации о ФН</button>
+										<button type="button" class="btn btn-outline-success demo-button" data-op="queryFnStatus">Запрос статуса ФН</button>
+										<button type="button" class="btn btn-outline-success demo-button" data-op="queryOfdExchangeStatus">Запрос статуса обмена с ОФД</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
