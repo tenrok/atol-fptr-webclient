@@ -179,7 +179,13 @@
 						$el.closest('.card-body').upsert().html(JSON.stringify(data, null, 2));
 					},
 					error: function ($el, jqXHR, textStatus, errorThrown) {
-						$el.closest('.card-body').upsert().html(jqXHR.responseText);
+						if (jqXHR.status === 0) {
+							$el.closest('.card-body').upsert().html('Отсутствует подключение. Проверьте работу вебсервера.');
+						} else if (jqXHR.status === 500) {
+							$el.closest('.card-body').upsert().html('Внутренняя ошибка: ' + jqXHR.responseText);
+						} else {
+							$el.closest('.card-body').upsert().html(jqXHR.responseText);
+						}
 					}
 				});
 
