@@ -9,13 +9,18 @@
 		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
 		<script src="//cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.4.0/bootbox.min.js"></script>
 		<script src="fptr-api.js"></script>
-		<title>Тест</title>
+		<title>Демо веб-клиента АТОЛ ККТ</title>
+		<style>
+			body {
+				padding-top: 70px;
+			}
+		</style>
 		<script>
 			// Устанавливаем свои значения
 			FptrAPI.addr = 'http://127.0.0.1:16732/api/v2/';
 			FptrAPI.deviceId = 'test';
 
-			// DEMO
+			// ДЕМО
 			(function ($) {
 				'use strict';
 				$.demoButton = {
@@ -26,8 +31,8 @@
 				};
 				var DemoButton = function ($el, options) {
 					var _data = $el.data('demoButton'),
-							_userOptions = typeof options === 'function' ? {success: options} : options,
-							_options = $.extend(true, {}, $.demoButton.defaults, _userOptions, _data || {});
+						_userOptions = typeof options === 'function' ? {success: options} : options,
+						_options = $.extend(true, {}, $.demoButton.defaults, _userOptions, _data || {});
 					var _config = function (value) {
 						if (value === undefined) {
 							return _options;
@@ -139,7 +144,7 @@
 				$.fn.demoButton = function (options) {
 					return this.each(function () {
 						var $el = $(this),
-								data = $el.data('demoButton');
+							data = $el.data('demoButton');
 						if (data && data.initialized) {
 							return;
 						}
@@ -196,16 +201,29 @@
 		</script>
 	</head>
 	<body>
+		<nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
+			<a class="navbar-brand" href="https://solodyagin.github.io/atol-fptr-webclient/">Atol Fptr WebClient</a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarNav">
+				<ul class="navbar-nav">
+					<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown">Документация</a>
+						<div class="dropdown-menu">
+							<a class="dropdown-item" href="https://integration.atol.ru/api/" target="_blank">Описание API драйвера ККТ</a>
+							<a class="dropdown-item" href="https://app.swaggerhub.com/apis-docs/atol-dev/fptr-web-server/10.7.0.0/" target="_blank">Работа с вебсервером ККТ</a>
+						</div>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="https://github.com/solodyagin/atol-fptr-webclient">GitHub</a>
+					</li>
+				</ul>
+			</div>
+		</nav>
 		<div class="container-fluid">
 			<div class="row">
 				<div class="col-12">
-					<div class="card">
-						<div class="card-body">
-							<h5 class="card-title">Документация</h5>
-							<a href="https://integration.atol.ru/api/" target="_blank" class="card-link">Описание API</a>
-							<a href="https://app.swaggerhub.com/apis-docs/atol-dev/fptr-web-server/10.7.0.0/" target="_blank" class="card-link">Работа с вебсервером</a>
-						</div>
-					</div>
 					<div id="accordion">
 						<div class="card">
 							<div class="card-header"><h5><a class="card-link" data-toggle="collapse" href="#collapse1">Общие запросы</a></h5></div>

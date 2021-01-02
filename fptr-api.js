@@ -1,9 +1,9 @@
-// FptrWebServer API
+// Atol Fptr WebClient
 var FptrAPI = (function () {
 	'use strict';
 
 	var addr = 'http://127.0.0.1:16732/api/v2/',
-			deviceId;
+		deviceId;
 
 	function API() {
 		this.addr = addr;
