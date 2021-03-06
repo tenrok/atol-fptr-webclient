@@ -8,7 +8,7 @@
 		<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
 		<script src="//cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.4.0/bootbox.min.js"></script>
-		<script src="fptr-api.js"></script>
+		<script src="fptr-client.js"></script>
 		<title>Демо веб-клиента АТОЛ ККТ</title>
 		<style>
 			body {
@@ -17,8 +17,8 @@
 		</style>
 		<script>
 			// Устанавливаем свои значения
-			FptrAPI.addr = 'http://127.0.0.1:16732/api/v2/';
-			FptrAPI.deviceId = 'test';
+			FptrClient.addr = 'http://127.0.0.1:16732/api/v2/';
+			FptrClient.deviceId = 'test';
 
 			// ДЕМО
 			(function ($) {
@@ -56,21 +56,21 @@
 					$el.click(function () {
 						switch ($el.data('op')) {
 							case 'getServerInfo':
-								FptrAPI.getServerInfo().done(_handleDone).fail(_handleFail);
+								FptrClient.getServerInfo().done(_handleDone).fail(_handleFail);
 								break;
 							case 'getSettings':
-								FptrAPI.getSettings().done(_handleDone).fail(_handleFail);
+								FptrClient.getSettings().done(_handleDone).fail(_handleFail);
 								break;
 							case 'setSettings':
 								break;
 							case 'devices':
-								FptrAPI.get('devices' + ($el.data('deviceId') ? '/' + $el.data('deviceId') : '')).done(_handleDone).fail(_handleFail);
+								FptrClient.get('devices' + ($el.data('deviceId') ? '/' + $el.data('deviceId') : '')).done(_handleDone).fail(_handleFail);
 								break;
 							case 'deviceParametersStruct':
-								FptrAPI.get('utils/deviceParametersStruct').done(_handleDone).fail(_handleFail);
+								FptrClient.get('utils/deviceParametersStruct').done(_handleDone).fail(_handleFail);
 								break;
 							case 'mapping':
-								FptrAPI.get('utils/mapping').done(_handleDone).fail(_handleFail);
+								FptrClient.get('utils/mapping').done(_handleDone).fail(_handleFail);
 								break;
 							case 'setDefaultDevice':
 								break;
@@ -79,35 +79,35 @@
 							case 'deactivateDevice':
 								break;
 							case 'queryDeviceInfo':
-								FptrAPI.queryDeviceInfo().done(_handleDone).fail(_handleFail);
+								FptrClient.queryDeviceInfo().done(_handleDone).fail(_handleFail);
 								break;
 							case 'queryDeviceStatus':
-								FptrAPI.queryDeviceStatus().done(_handleDone).fail(_handleFail);
+								FptrClient.queryDeviceStatus().done(_handleDone).fail(_handleFail);
 								break;
 							case 'queryShiftStatus':
-								FptrAPI.queryShiftStatus().done(_handleDone).fail(_handleFail);
+								FptrClient.queryShiftStatus().done(_handleDone).fail(_handleFail);
 								break;
 							case 'queryShiftTotals':
-								FptrAPI.queryShiftTotals().done(_handleDone).fail(_handleFail);
+								FptrClient.queryShiftTotals().done(_handleDone).fail(_handleFail);
 								break;
 							case 'queryIncomeTotals':
-								FptrAPI.queryIncomeTotals().done(_handleDone).fail(_handleFail);
+								FptrClient.queryIncomeTotals().done(_handleDone).fail(_handleFail);
 								break;
 							case 'queryOutcomeTotals':
-								FptrAPI.queryOutcomeTotals().done(_handleDone).fail(_handleFail);
+								FptrClient.queryOutcomeTotals().done(_handleDone).fail(_handleFail);
 								break;
 							case 'queryReceiptTotals':
 								var obj = {type: 'sell'};
-								FptrAPI.queryReceiptTotals(obj).done(_handleDone).fail(_handleFail);
+								FptrClient.queryReceiptTotals(obj).done(_handleDone).fail(_handleFail);
 								break;
 							case 'queryFnInfo':
-								FptrAPI.queryFnInfo().done(_handleDone).fail(_handleFail);
+								FptrClient.queryFnInfo().done(_handleDone).fail(_handleFail);
 								break;
 							case 'queryFnStatus':
-								FptrAPI.queryFnStatus().done(_handleDone).fail(_handleFail);
+								FptrClient.queryFnStatus().done(_handleDone).fail(_handleFail);
 								break;
 							case 'queryOfdExchangeStatus':
-								FptrAPI.queryOfdExchangeStatus().done(_handleDone).fail(_handleFail);
+								FptrClient.queryOfdExchangeStatus().done(_handleDone).fail(_handleFail);
 								break;
 							case 'request':
 								bootbox.prompt({
@@ -122,17 +122,17 @@
 												console.log('Not valid JSON');
 											}
 											if (obj) {
-												FptrAPI.request(obj).done(_handleDone).fail(_handleFail);
+												FptrClient.request(obj).done(_handleDone).fail(_handleFail);
 											}
 										}
 									}
 								});
 								break;
 							case 'openShift':
-								FptrAPI.openShift($el.data('operatorName'), $el.data('operatorVatin')).done(_handleDone).fail(_handleFail);
+								FptrClient.openShift($el.data('operatorName'), $el.data('operatorVatin')).done(_handleDone).fail(_handleFail);
 								break;
 							case 'closeShift':
-								FptrAPI.closeShift($el.data('operatorName'), $el.data('operatorVatin')).done(_handleDone).fail(_handleFail);
+								FptrClient.closeShift($el.data('operatorName'), $el.data('operatorVatin')).done(_handleDone).fail(_handleFail);
 								break;
 						}
 					});
@@ -176,7 +176,7 @@
 //						}
 						if (data.uuid) {
 							// Попытаемся получить результат выполнения задания
-							FptrAPI.getResult(data.uuid, function (data) {
+							FptrClient.getResult(data.uuid, function (data) {
 								$el.closest('.card-body').upsert().append(JSON.stringify(data, null, 2));
 							});
 							return;
@@ -202,7 +202,7 @@
 	</head>
 	<body>
 		<nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
-			<a class="navbar-brand" href="https://solodyagin.github.io/atol-fptr-webclient/">Atol Fptr WebClient</a>
+			<a class="navbar-brand" href="https://tenrok.github.io/atol-fptr-webclient/">ATOL Fptr WebClient</a>
 			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
 				<span class="navbar-toggler-icon"></span>
 			</button>
@@ -216,7 +216,7 @@
 						</div>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" href="https://github.com/solodyagin/atol-fptr-webclient">GitHub</a>
+						<a class="nav-link" href="https://github.com/tenrok/atol-fptr-webclient">GitHub</a>
 					</li>
 				</ul>
 			</div>
